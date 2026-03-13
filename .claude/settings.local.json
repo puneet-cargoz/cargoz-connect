@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-git)",
+      "Bash(echo \"PATH: $PATH\")",
+      "WebFetch(domain:dairy-bagel-41731867.figma.site)",
+      "WebFetch(domain:cargoz.com)",
+      "Bash(sed -i '' 's/#3b82f6/#7957ff/g' /Users/puneetmishra/Desktop/Cargoz-Connect/src/app/page.tsx)",
+      "Bash(__NEW_LINE_38fda21d5f85dc0f__ sed:*)",
+      "Bash(__NEW_LINE_38fda21d5f85dc0f__ echo:*)",
+      "Bash(sw_vers)",
+      "Bash(curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh)",
+      "Bash(bash)",
+      "Bash(export NVM_DIR=\"$HOME/.nvm\")",
+      "Bash(. \"$NVM_DIR/nvm.sh\")",
+      "Bash(nvm install:*)",
+      "Bash(npm -v)",
+      "Bash(npm install:*)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(xargs kill:*)",
+      "Bash(export NVM_DIR=$HOME/.nvm)",
+      "Bash(. $NVM_DIR/nvm.sh)",
+      "Bash(npm show:*)",
+      "Bash(python3 -c \"import sys,json; vs=[v for v in json.load\\(sys.stdin\\) if v.startswith\\(''''15.''''\\)]; print\\(vs[-5:]\\)\")",
+      "Bash(node -e \":*)",
+      "WebFetch(domain:www.cargoz.com)",
+      "Bash(git config:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"Initial commit: Cargoz Connect warehouse partner portal:*)"
+    ]
+  }
+}
