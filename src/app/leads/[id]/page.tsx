@@ -47,7 +47,7 @@ export default function LeadDetailPage() {
     // In production this would POST to /api/leads/[id]/interest
     // and open a WhatsApp link with pre-filled message
     const whatsappText = encodeURIComponent(
-      `Hi, I'm interested in Lead ${lead.id} (${lead.warehouseType} - ${lead.area}, ${lead.city}).\n\nCompany: ${form.companyName}\nContact: ${form.contactName}\nWarehouse: ${form.sqft} sqft in ${form.location}\nQuoted Price: ${form.quote}\n\n${form.notes}`
+      `Hi, I'm interested in Lead ${lead!.id} (${lead!.warehouseType} - ${lead!.area}, ${lead!.city}).\n\nCompany: ${form.companyName}\nContact: ${form.contactName}\nWarehouse: ${form.sqft} sqft in ${form.location}\nQuoted Price: ${form.quote}\n\n${form.notes}`
     );
     window.open(`https://wa.me/971544462859?text=${whatsappText}`, "_blank");
     setSubmitted(true);

@@ -27,7 +27,8 @@
       "WebFetch(domain:www.cargoz.com)",
       "Bash(git config:*)",
       "Bash(git add:*)",
-      "Bash(git commit -m \"Initial commit: Cargoz Connect warehouse partner portal:*)"
+      "Bash(git commit -m \"Initial commit: Cargoz Connect warehouse partner portal:*)",
+      "Bash(git push:*)"
     ]
   }
 }
