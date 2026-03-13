@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import { MOCK_LEADS } from "@/lib/data";
@@ -75,7 +75,7 @@ const STATUS_STYLE: Record<string, string> = {
   Lost:        "bg-red-50 text-red-500 border border-red-200",
 };
 
-const NOTIF_ICON: Record<string, JSX.Element> = {
+const NOTIF_ICON: Record<string, React.ReactNode> = {
   shortlisted: <Zap size={14} className="text-teal-500" />,
   won:         <CheckCircle2 size={14} className="text-emerald-500" />,
   lost:        <XCircle size={14} className="text-red-400" />,
