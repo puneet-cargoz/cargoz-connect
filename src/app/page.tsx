@@ -145,7 +145,7 @@ function AIPromptBox() {
             ) : (
               <Sparkles className="w-3.5 h-3.5" />
             )}
-            {searching ? "Searching…" : "AI-Search"}
+            {searching ? "Searching…" : "Search"}
           </button>
         </div>
       </div>
@@ -490,6 +490,105 @@ function AIPromptBox() {
   );
 }
 
+// ─── How It Works — Interactive Tabs ──────────────────────────────────────────
+
+const HOW_TABS = {
+  customer: {
+    label: "🏢 I need storage",
+    color: "brand",
+    steps: [
+      { step: "01", title: "Search", desc: "Browse by warehouse type, emirate, and size. Filter for food grade, DG class, AC, open yard and more." },
+      { step: "02", title: "Submit enquiry", desc: "Fill a short form or send a WhatsApp message. No lengthy RFP or site visits required to get started." },
+      { step: "03", title: "We connect you", desc: "Our team shortlists and connects you with the best-matched warehouse within 24 hours." },
+      { step: "04", title: "Move in", desc: "Agree terms directly with the warehouse. No broker fees. Flexible monthly contracts, no lock-in." },
+    ],
+    cta: { label: "Browse Warehouses →", href: "/warehouses" },
+  },
+  partner: {
+    label: "🏭 I have a warehouse",
+    color: "teal",
+    steps: [
+      { step: "01", title: "Register free", desc: "Fill a short form with your warehouse details. No upfront cost, no monthly fee." },
+      { step: "02", title: "Get verified", desc: "Our team calls within 24 hours to verify your warehouse. Your listing goes live within 48 hours." },
+      { step: "03", title: "Receive leads", desc: "Matching leads land directly in your WhatsApp. Quote with one click — no chasing tenants." },
+      { step: "04", title: "Earn", desc: "You set the terms. Small success fee on confirmed bookings only. If you don't earn, we don't earn." },
+    ],
+    cta: { label: "Register Free →", href: "/register" },
+  },
+  blocks: {
+    label: "⚡ Blocks & Lockers",
+    color: "amber",
+    steps: [
+      { step: "01", title: "Select space", desc: "Choose Block or Locker, pick your size and preferred location from the dropdown." },
+      { step: "02", title: "Choose warehouse", desc: "See available units at matching facilities with pricing and location details." },
+      { step: "03", title: "Reserve online", desc: "Confirm details, sign a digital agreement, and hold with a small deposit." },
+      { step: "04", title: "Move in", desc: "Access code sent on WhatsApp. Move in within 48 hours. Fully digital, zero phone calls." },
+    ],
+    cta: { label: "Browse Blocks & Lockers →", href: "/products" },
+  },
+};
+
+function HowItWorksSection() {
+  const [activeTab, setActiveTab] = useState<keyof typeof HOW_TABS>("customer");
+  const tab = HOW_TABS[activeTab];
+  const colorMap: Record<string, { bg: string; text: string; border: string; stepBg: string; stepBorder: string; ctaBg: string; ctaHover: string }> = {
+    brand: { bg: "bg-brand-50", text: "text-brand-500", border: "border-brand-200", stepBg: "bg-brand-50", stepBorder: "border-brand-200", ctaBg: "bg-brand-500", ctaHover: "hover:bg-brand-600" },
+    teal: { bg: "bg-teal-50", text: "text-teal-500", border: "border-teal-200", stepBg: "bg-teal-50", stepBorder: "border-teal-200", ctaBg: "bg-teal-500", ctaHover: "hover:bg-teal-600" },
+    amber: { bg: "bg-amber-50", text: "text-amber-600", border: "border-amber-200", stepBg: "bg-amber-50", stepBorder: "border-amber-200", ctaBg: "bg-amber-500", ctaHover: "hover:bg-amber-600" },
+  };
+  const c = colorMap[tab.color];
+
+  return (
+    <section className="bg-white py-16 px-4" id="how-it-works">
+      <div className="max-w-5xl mx-auto">
+        <div className="text-center mb-10">
+          <h2 className="font-heading text-3xl font-bold text-slate-900 mb-6">How Cargoz Works</h2>
+          {/* Tabs */}
+          <div className="inline-flex items-center bg-slate-100 rounded-full p-1 gap-1 flex-wrap justify-center">
+            {(Object.keys(HOW_TABS) as (keyof typeof HOW_TABS)[]).map((key) => (
+              <button
+                key={key}
+                onClick={() => setActiveTab(key)}
+                className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                  activeTab === key
+                    ? `bg-white shadow-sm text-slate-900`
+                    : "text-slate-500 hover:text-slate-700"
+                }`}
+              >
+                {HOW_TABS[key].label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 relative">
+          {tab.steps.map((s, i) => (
+            <div key={s.step} className="relative text-center">
+              {i < 3 && (
+                <div className="hidden lg:block absolute top-8 left-[calc(100%_-_12px)] w-full h-px bg-slate-200 z-0" />
+              )}
+              <div className={`relative z-10 w-16 h-16 ${c.stepBg} border-2 ${c.stepBorder} rounded-2xl flex items-center justify-center mx-auto mb-4`}>
+                <span className={`font-heading font-bold text-lg ${c.text}`}>{s.step}</span>
+              </div>
+              <h3 className="font-heading font-semibold text-slate-900 mb-2">{s.title}</h3>
+              <p className="text-sm text-slate-500 leading-relaxed">{s.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="text-center mt-10">
+          <Link
+            href={tab.cta.href}
+            className={`inline-flex items-center gap-2 px-7 py-3 ${c.ctaBg} ${c.ctaHover} text-white font-semibold rounded-xl transition-colors text-sm`}
+          >
+            {tab.cta.label}
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ─── Homepage ─────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
@@ -548,15 +647,15 @@ export default function HomePage() {
               </div>
 
               <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-4">
-                Find Business Storage<br />
+                Book verified warehouse space<br />
                 <span className="bg-gradient-to-r from-brand-400 to-teal-400 bg-clip-text text-transparent">
-                  in the UAE — Fast
+                  — no brokers, no lock-ins
                 </span>
               </h1>
 
               <p className="text-slate-300 text-lg sm:text-xl max-w-2xl mx-auto mb-10">
-                Search verified warehouses across Dubai, Abu Dhabi and Sharjah.
-                Any type. Any size. No brokers. No long negotiations.
+                Search 120,000+ sqft of verified storage across Dubai, Abu Dhabi and Sharjah.
+                Flexible monthly contracts. Connect with a warehouse within 24 hours.
               </p>
 
               <AIPromptBox />
@@ -583,20 +682,35 @@ export default function HomePage() {
                 For Warehouse Owners
               </span>
               <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-4">
-                Own Warehouse Space?<br />
-                <span className="text-teal-400">Connect With Verified Buyers.</span>
+                Turn idle sqft into<br />
+                <span className="text-teal-400">guaranteed monthly revenue</span>
               </h1>
               <p className="text-slate-300 text-lg sm:text-xl max-w-2xl mx-auto mb-10">
-                Stop waiting for tenants to find you. Cargoz brings a pipeline of
-                1,000+ verified storage enquiries every month directly to you.
+                180+ warehouses already earning through Cargoz. We bring 1,000+ verified
+                storage enquiries every month — you just respond on WhatsApp.
               </p>
+
+              {/* Proof stats — partner-specific */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto mb-10">
+                {[
+                  { value: "88%", label: "Avg. utilisation after 8 weeks" },
+                  { value: "1,000+", label: "New leads every month" },
+                  { value: "AED 0", label: "Upfront cost to register" },
+                  { value: "24 hrs", label: "First lead turnaround" },
+                ].map((s) => (
+                  <div key={s.label} className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
+                    <p className="font-heading text-xl font-bold text-white">{s.value}</p>
+                    <p className="text-xs text-slate-400 mt-0.5 leading-tight">{s.label}</p>
+                  </div>
+                ))}
+              </div>
 
               <div className="grid sm:grid-cols-2 gap-4 text-left max-w-2xl mx-auto mb-10">
                 {[
-                  { icon: <TrendingUp className="w-4 h-4" />, text: "Access 25,000+ verified storage enquiries" },
-                  { icon: <Zap className="w-4 h-4" />, text: "Real-time WhatsApp notifications on new leads" },
-                  { icon: <ShieldCheck className="w-4 h-4" />, text: "Dedicated Cargoz sales rep manages your account" },
-                  { icon: <Check className="w-4 h-4" />, text: "Free to register — no upfront cost" },
+                  { icon: <TrendingUp className="w-4 h-4" />, text: "Leads matched to your warehouse type, size, and location" },
+                  { icon: <Zap className="w-4 h-4" />, text: "WhatsApp alert the moment a matching lead comes in" },
+                  { icon: <ShieldCheck className="w-4 h-4" />, text: "Dedicated account manager from day one" },
+                  { icon: <Check className="w-4 h-4" />, text: "No upfront cost — small success fee on confirmed bookings only" },
                 ].map((item) => (
                   <div key={item.text} className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-3">
                     <div className="w-7 h-7 bg-teal-500/20 rounded-lg flex items-center justify-center text-teal-400 flex-shrink-0">
@@ -607,32 +721,18 @@ export default function HomePage() {
                 ))}
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto mb-10">
-                {[
-                  { value: "25,000+", label: "Leads Collected" },
-                  { value: "1,000+", label: "New Leads / Month" },
-                  { value: "2,000+", label: "Orders Converted" },
-                  { value: "180+", label: "Partner Warehouses" },
-                ].map((s) => (
-                  <div key={s.label} className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
-                    <p className="font-heading text-xl font-bold text-white">{s.value}</p>
-                    <p className="text-xs text-slate-400 mt-0.5 leading-tight">{s.label}</p>
-                  </div>
-                ))}
-              </div>
-
               <div className="flex items-center justify-center gap-3 flex-wrap">
                 <Link
-                  href="/leads"
+                  href="/register"
                   className="px-6 py-3 bg-teal-500 hover:bg-teal-400 text-white font-semibold rounded-xl transition-colors text-sm"
                 >
-                  See Live Leads
+                  Register Your Warehouse — Free
                 </Link>
                 <Link
-                  href="/register"
-                  className="px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-xl transition-colors text-sm"
+                  href="/leads"
+                  className="px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold rounded-xl transition-colors text-sm"
                 >
-                  Register Your Warehouse — Free
+                  See Live Leads &rarr;
                 </Link>
               </div>
             </div>
@@ -646,10 +746,10 @@ export default function HomePage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
           <div className="grid grid-cols-4 gap-2 sm:gap-6 text-center">
             {[
-              { value: "120,000+", label: "sqft in active use", icon: <Warehouse className="w-4 h-4 sm:w-5 sm:h-5 text-brand-500" /> },
-              { value: "25+", label: "UAE locations", icon: <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-teal-500" /> },
-              { value: "500+", label: "businesses served", icon: <Users className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-500" /> },
-              { value: "2", label: "countries", icon: <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500" /> },
+              { value: "AED 50M+", label: "Storage value matched", icon: <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-brand-500" /> },
+              { value: "25,000+", label: "Verified leads collected", icon: <Users className="w-4 h-4 sm:w-5 sm:h-5 text-teal-500" /> },
+              { value: "2,000+", label: "Orders converted", icon: <Check className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-500" /> },
+              { value: "98%", label: "Partner satisfaction", icon: <Star className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" /> },
             ].map((s) => (
               <div key={s.label} className="flex flex-col items-center gap-1">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-slate-50 rounded-xl flex items-center justify-center mb-1">
@@ -758,90 +858,86 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── DIGITAL PRODUCTS ── */}
+      {/* ── BLOCKS & LOCKERS — Urgency framing ── */}
       <section className="bg-white py-16 px-4">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
-            <span className="inline-flex items-center gap-1.5 bg-brand-50 text-brand-700 text-xs font-semibold px-3 py-1 rounded-full border border-brand-100 mb-3">
+            <span className="inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 text-xs font-semibold px-3 py-1.5 rounded-full border border-amber-200 mb-4">
               <Zap className="w-3.5 h-3.5" />
-              Standardised Products
+              Need space fast?
             </span>
             <h2 className="font-heading text-3xl font-bold text-slate-900 mb-2">
-              Need Something Ready-Made?
+              Blocks & Lockers — move in within 48 hours
             </h2>
-            <p className="text-slate-500">
-              Fixed pricing. No negotiation. Book online, move in within days.
+            <p className="text-slate-500 max-w-2xl mx-auto">
+              Fixed price. Book online. No phone calls, no site visits, no negotiations. Reserve your space now and we&apos;ll confirm availability within 24 hours.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
             {/* Block */}
-            <div className="bg-gradient-to-br from-brand-50 to-slate-50 rounded-3xl border border-brand-100 p-6 hover:shadow-md transition-shadow">
-              <div className="flex items-start gap-4">
-                <div className="w-14 h-14 bg-brand-500 rounded-2xl flex items-center justify-center flex-shrink-0">
-                  <Package className="w-7 h-7 text-white" />
+            <div className="bg-white rounded-2xl border-2 border-amber-200 p-6 hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
+                  <Package className="w-5 h-5 text-amber-600" />
                 </div>
-                <div className="flex-1">
-                  <h3 className="font-heading font-bold text-slate-900 text-xl mb-0.5">
-                    Storage Block
-                  </h3>
-                  <p className="text-slate-500 text-sm mb-3">
-                    Your own dedicated, partitioned storage bay
-                  </p>
-                  <p className="text-2xl font-bold text-brand-600 mb-4">
-                    From AED 1,200<span className="text-sm font-normal text-slate-500">/month</span>
-                  </p>
-                  <ul className="space-y-1.5 mb-5">
-                    {["50–5,000 sqft available", "24/7 access & security", "Flexible 1-month minimum"].map((f) => (
-                      <li key={f} className="flex items-center gap-2 text-sm text-slate-600">
-                        <Check className="w-4 h-4 text-brand-500 flex-shrink-0" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link
-                    href="/products"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-xl text-sm transition-colors"
-                  >
-                    Book a Block <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </div>
+                <h3 className="font-heading font-bold text-slate-900 text-xl">Storage Block</h3>
               </div>
+              <p className="text-slate-600 text-sm mb-3">
+                Dedicated partitioned bay — your own space, 24/7 access
+              </p>
+              <ul className="space-y-1.5 mb-5 text-sm text-slate-500">
+                <li>50 – 5,000 sqft available</li>
+                <li>1-month minimum, flexible</li>
+                <li>CCTV, fire systems, loading dock</li>
+              </ul>
+              <p className="text-2xl font-bold text-amber-600 mb-4">
+                AED 1,200 <span className="text-sm font-normal text-slate-500">/month from</span>
+              </p>
+              <Link
+                href="/products"
+                className="block w-full text-center py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl text-sm transition-colors"
+              >
+                Reserve a Block &rarr;
+              </Link>
             </div>
 
             {/* Locker */}
-            <div className="bg-gradient-to-br from-teal-50 to-slate-50 rounded-3xl border border-teal-100 p-6 hover:shadow-md transition-shadow">
-              <div className="flex items-start gap-4">
-                <div className="w-14 h-14 bg-teal-500 rounded-2xl flex items-center justify-center flex-shrink-0">
-                  <Lock className="w-7 h-7 text-white" />
+            <div className="bg-white rounded-2xl border-2 border-amber-200 p-6 hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
+                  <Lock className="w-5 h-5 text-amber-600" />
                 </div>
-                <div className="flex-1">
-                  <h3 className="font-heading font-bold text-slate-900 text-xl mb-0.5">
-                    Storage Locker
-                  </h3>
-                  <p className="text-slate-500 text-sm mb-3">
-                    Personal lockable unit — your key, your control
-                  </p>
-                  <p className="text-2xl font-bold text-teal-600 mb-4">
-                    From AED 250<span className="text-sm font-normal text-slate-500">/month</span>
-                  </p>
-                  <ul className="space-y-1.5 mb-5">
-                    {["Small / Medium / Large units", "Climate controlled", "Weekly or monthly contracts"].map((f) => (
-                      <li key={f} className="flex items-center gap-2 text-sm text-slate-600">
-                        <Check className="w-4 h-4 text-teal-500 flex-shrink-0" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link
-                    href="/products"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-teal-500 hover:bg-teal-600 text-white font-semibold rounded-xl text-sm transition-colors"
-                  >
-                    Book a Locker <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </div>
+                <h3 className="font-heading font-bold text-slate-900 text-xl">Storage Locker</h3>
               </div>
+              <p className="text-slate-600 text-sm mb-3">
+                Personal lockable unit — your lock, your key, your control
+              </p>
+              <ul className="space-y-1.5 mb-5 text-sm text-slate-500">
+                <li>Small / Medium / Large units</li>
+                <li>Weekly or monthly</li>
+                <li>Climate controlled, keycard access</li>
+              </ul>
+              <p className="text-2xl font-bold text-amber-600 mb-4">
+                AED 250 <span className="text-sm font-normal text-slate-500">/month from</span>
+              </p>
+              <Link
+                href="/products"
+                className="block w-full text-center py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl text-sm transition-colors"
+              >
+                Reserve a Locker &rarr;
+              </Link>
             </div>
+          </div>
+
+          {/* Trust strip */}
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-sm text-slate-500">
+            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-500" /> Availability confirmed in 24h</span>
+            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-500" /> Fixed price, no negotiation</span>
+            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-500" /> Move in within 48 hours</span>
+            <Link href="/warehouses" className="text-brand-500 font-medium hover:text-brand-600">
+              Need more than 5,000 sqft? Browse all warehouses &rarr;
+            </Link>
           </div>
         </div>
       </section>
@@ -863,19 +959,18 @@ export default function HomePage() {
                 For Warehouse Owners
               </span>
               <h2 className="font-heading text-3xl sm:text-4xl font-bold text-white mb-4 leading-tight">
-                Own Warehouse Space?<br />
-                <span className="text-teal-400">Connect With Verified Buyers.</span>
+                Your empty warehouse is costing you money.<br />
+                <span className="text-teal-400">We&apos;ll fill it.</span>
               </h2>
               <p className="text-slate-300 text-lg mb-6">
-                Stop waiting for tenants to find you. Cargoz brings a pipeline of
-                1,000+ verified storage enquiries every month directly to you.
+                180+ partner warehouses. Zero marketing spend. Leads delivered to your WhatsApp — you just respond.
               </p>
               <div className="space-y-3 mb-8">
                 {[
-                  { icon: <TrendingUp className="w-4 h-4" />, text: "Access 25,000+ verified storage enquiries" },
-                  { icon: <Zap className="w-4 h-4" />, text: "Real-time WhatsApp notifications on new leads" },
-                  { icon: <ShieldCheck className="w-4 h-4" />, text: "Dedicated Cargoz sales rep manages your account" },
-                  { icon: <Check className="w-4 h-4" />, text: "Free to register — no upfront cost" },
+                  { icon: <TrendingUp className="w-4 h-4" />, text: "Leads matched to your warehouse type, size, and location" },
+                  { icon: <Zap className="w-4 h-4" />, text: "WhatsApp alert the moment a matching lead comes in" },
+                  { icon: <Check className="w-4 h-4" />, text: "No upfront cost — small success fee on confirmed bookings only" },
+                  { icon: <ShieldCheck className="w-4 h-4" />, text: "Dedicated account manager from day one" },
                 ].map((item) => (
                   <div key={item.text} className="flex items-center gap-3 text-slate-300">
                     <div className="w-7 h-7 bg-brand-500/20 rounded-lg flex items-center justify-center text-brand-400">
@@ -885,21 +980,32 @@ export default function HomePage() {
                   </div>
                 ))}
               </div>
+
+              {/* Partner logos */}
+              <div className="mb-8">
+                <div className="flex flex-wrap items-center gap-3">
+                  {["Aramex", "RSA Global", "Noatum", "Bridgeway", "5PL"].map((name) => (
+                    <span key={name} className="px-3 py-1.5 bg-white/10 border border-white/10 rounded-lg text-xs text-slate-400 font-medium">{name}</span>
+                  ))}
+                  <span className="text-xs text-slate-500">+ 175 more</span>
+                </div>
+              </div>
+
               <div className="flex items-center gap-3 flex-wrap">
-                <Link href="/register" className="px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-xl transition-colors text-sm">
-                  Register Your Warehouse — Free
+                <Link href="/leads" className="px-6 py-3 bg-teal-500 hover:bg-teal-400 text-white font-semibold rounded-xl transition-colors text-sm">
+                  See Live Leads &rarr;
                 </Link>
-                <Link href="/leads" className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl transition-colors text-sm border border-white/20">
-                  See Live Leads
+                <Link href="/register" className="px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-xl transition-colors text-sm">
+                  Register Free
                 </Link>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               {[
-                { value: "25,000+", label: "Storage Leads Collected", icon: <TrendingUp className="w-5 h-5 text-brand-400" /> },
-                { value: "1,000+", label: "New Leads Every Month", icon: <Zap className="w-5 h-5 text-teal-400" /> },
-                { value: "2,000+", label: "Orders Converted", icon: <Check className="w-5 h-5 text-emerald-400" /> },
-                { value: "180+", label: "Partner Warehouses", icon: <Building2 className="w-5 h-5 text-purple-400" /> },
+                { value: "25,000+", label: "Active leads", icon: <TrendingUp className="w-5 h-5 text-brand-400" /> },
+                { value: "AED 50M+", label: "Value matched", icon: <Zap className="w-5 h-5 text-teal-400" /> },
+                { value: "2,000+", label: "Orders converted", icon: <Check className="w-5 h-5 text-emerald-400" /> },
+                { value: "98%", label: "Partner satisfaction", icon: <Star className="w-5 h-5 text-amber-400" /> },
               ].map((s) => (
                 <div key={s.label} className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-5 text-center hover:bg-white/10 transition-colors">
                   <div className="flex justify-center mb-2">{s.icon}</div>
@@ -917,46 +1023,54 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="font-heading text-3xl font-bold text-slate-900 mb-2">
-              Trusted by Businesses Across the UAE
+              Trusted by customers and warehouse partners alike
             </h2>
-            <p className="text-slate-500">From F&amp;B to pharma — we handle every storage need.</p>
+            <p className="text-slate-500">Real results from real logistics professionals across the UAE.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-6 mb-10">
             {[
+              {
+                name: "Ahmed Al Rashidi",
+                company: "RSA Global Logistics · Al Quoz",
+                role: "Operations Manager",
+                text: "We went from 40% utilisation to 88% in 8 weeks. The leads come in on WhatsApp — we just respond and quote.",
+                rating: 5,
+                type: "partner" as const,
+              },
+              {
+                name: "Khalid Mansouri",
+                company: "Bridgeway Logistics · Jebel Ali",
+                role: "Director",
+                text: "Before Cargoz we had a sales team chasing tenants. Now leads arrive daily. Our idle space is under 10%.",
+                rating: 5,
+                type: "partner" as const,
+              },
               {
                 name: "Fatima Al Hamdan",
                 company: "Fresh Direct Foods LLC",
                 role: "Logistics Manager",
                 text: "Found a certified food-grade chiller in JAFZA within 48 hours. The Cargoz team handled everything — no back-and-forth with brokers.",
                 rating: 5,
-              },
-              {
-                name: "Ravi Sharma",
-                company: "MedStoreHub FZE",
-                role: "Supply Chain Head",
-                text: "We needed GDP-compliant storage at short notice. Cargoz matched us with a MOH-approved facility in DIC the same day we enquired.",
-                rating: 5,
-              },
-              {
-                name: "Ola Bergström",
-                company: "Nordic Trade Co.",
-                role: "Regional Director",
-                text: "Three warehouses in three emirates — all sourced through Cargoz. The platform gives us total visibility and a single point of contact.",
-                rating: 5,
+                type: "customer" as const,
               },
             ].map((t) => (
-              <div key={t.name} className="bg-white rounded-2xl border border-slate-200 p-6">
-                <div className="flex items-center gap-1 mb-4">
-                  {[...Array(t.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
-                  ))}
+              <div key={t.name} className={`bg-white rounded-2xl border p-6 ${t.type === "partner" ? "border-teal-200 border-t-4 border-t-teal-400" : "border-slate-200 border-t-4 border-t-brand-400"}`}>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-1">
+                    {[...Array(t.rating)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
+                    ))}
+                  </div>
+                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${t.type === "partner" ? "bg-teal-50 text-teal-600" : "bg-brand-50 text-brand-600"}`}>
+                    {t.type === "partner" ? "🏭 Warehouse partner" : "🏢 Customer"}
+                  </span>
                 </div>
                 <p className="text-slate-700 text-sm leading-relaxed mb-4">
                   &ldquo;{t.text}&rdquo;
                 </p>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-brand-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-brand-600 font-bold text-sm">{t.name.charAt(0)}</span>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${t.type === "partner" ? "bg-teal-100" : "bg-brand-100"}`}>
+                    <span className={`font-bold text-sm ${t.type === "partner" ? "text-teal-600" : "text-brand-600"}`}>{t.name.charAt(0)}</span>
                   </div>
                   <div>
                     <p className="font-semibold text-slate-800 text-sm">{t.name}</p>
@@ -979,35 +1093,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── HOW IT WORKS ── */}
-      <section className="bg-white py-16 px-4" id="how-it-works">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="font-heading text-3xl font-bold text-slate-900 mb-2">How Cargoz Works</h2>
-            <p className="text-slate-500">Simple. Fast. Reliable.</p>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 relative">
-            {[
-              { step: "01", title: "Search or Tell Us", desc: "Use the AI search box or browse our warehouse listings by type and location.", icon: <Warehouse className="w-6 h-6 text-brand-500" /> },
-              { step: "02", title: "Submit Enquiry", desc: "Fill a short form or send a WhatsApp message. No lengthy RFP process.", icon: <Send className="w-6 h-6 text-brand-500" /> },
-              { step: "03", title: "We Connect You", desc: "Our team shortlists and connects you with the best-matched warehouse within 24 hours.", icon: <MessageCircle className="w-6 h-6 text-brand-500" /> },
-              { step: "04", title: "Move In", desc: "Agree terms directly with the warehouse. No broker fees. Flexible monthly contracts.", icon: <Check className="w-6 h-6 text-brand-500" /> },
-            ].map((s, i) => (
-              <div key={s.step} className="relative text-center group">
-                {i < 3 && (
-                  <div className="hidden lg:block absolute top-8 left-[calc(100%_-_12px)] w-full h-px bg-slate-200 z-0" />
-                )}
-                <div className="relative z-10 w-16 h-16 bg-brand-50 border-2 border-brand-200 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-brand-500 group-hover:border-brand-500 transition-colors">
-                  <div className="group-hover:[&_*]:text-white transition-colors">{s.icon}</div>
-                </div>
-                <span className="text-xs font-bold text-brand-500 tracking-widest">{s.step}</span>
-                <h3 className="font-heading font-semibold text-slate-900 mt-0.5 mb-2">{s.title}</h3>
-                <p className="text-sm text-slate-500 leading-relaxed">{s.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* ── HOW IT WORKS — Interactive tabs ── */}
+      <HowItWorksSection />
 
       {/* ── FINAL CTA ── */}
       <section className="bg-brand-500 py-14 px-4">
@@ -1067,7 +1154,7 @@ export default function HomePage() {
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">Company</p>
               <ul className="space-y-2">
-                {[{ label: "About Cargoz", href: "/" }, { label: "Partner Dashboard", href: "/dashboard" }, { label: "Sign In", href: "/login" }, { label: "Privacy Policy", href: "/" }, { label: "Terms of Use", href: "/" }].map((l) => (
+                {[{ label: "About Cargoz", href: "/about" }, { label: "Partner Dashboard", href: "/dashboard" }, { label: "Sign In", href: "/login" }, { label: "Privacy Policy", href: "/" }, { label: "Terms of Use", href: "/" }].map((l) => (
                   <li key={l.label}><Link href={l.href} className="text-sm hover:text-white transition-colors">{l.label}</Link></li>
                 ))}
               </ul>

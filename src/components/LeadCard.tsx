@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { MapPin, Clock, Building2, TrendingUp } from "lucide-react";
+import { MapPin, Clock, Building2, ShieldCheck, Calendar } from "lucide-react";
 import type { Lead } from "@/lib/data";
 
 const TYPE_COLORS: Record<string, string> = {
@@ -17,8 +17,13 @@ const STATUS_COLORS: Record<string, string> = {
   Lost:      "bg-red-100 text-red-600",
 };
 
+const MAX_RESPONSES = 15;
+
 export default function LeadCard({ lead }: { lead: Lead }) {
   const isActive = lead.status === "Open";
+  const isHot = lead.responses >= 7;
+  const fillPercent = Math.min(100, (lead.responses / MAX_RESPONSES) * 100);
+  const isFillingUp = lead.responses >= 5;
 
   return (
     <div
@@ -33,7 +38,7 @@ export default function LeadCard({ lead }: { lead: Lead }) {
 
       <div className="p-5">
         {/* Header */}
-        <div className="flex items-start justify-between gap-3 mb-3">
+        <div className="flex items-start justify-between gap-3 mb-2">
           <div className="flex items-center gap-2 flex-wrap">
             <span
               className={`inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-full border ${
@@ -52,9 +57,26 @@ export default function LeadCard({ lead }: { lead: Lead }) {
               )}
               {lead.status}
             </span>
+            {isHot && isActive && (
+              <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-600 border border-red-200">
+                🔥 Hot lead
+              </span>
+            )}
           </div>
           <span className="text-xs text-slate-400 shrink-0">#{lead.id}</span>
         </div>
+
+        {/* Verified + customer context */}
+        {isActive && (
+          <div className="flex items-center gap-2 mb-3 text-xs">
+            <span className="flex items-center gap-1 text-teal-600 font-medium">
+              <ShieldCheck size={11} />
+              Cargoz-verified
+            </span>
+            <span className="text-slate-400">·</span>
+            <span className="text-slate-500">Mid-size {lead.industry} company</span>
+          </div>
+        )}
 
         {/* Location & industry */}
         <h3 className="font-heading font-semibold text-slate-900 text-base leading-snug mb-1">
@@ -73,7 +95,7 @@ export default function LeadCard({ lead }: { lead: Lead }) {
         </p>
 
         {/* Meta */}
-        <div className="flex items-center gap-4 text-xs text-slate-500 mb-4">
+        <div className="flex items-center gap-4 text-xs text-slate-500 mb-3">
           <span className="flex items-center gap-1">
             <Building2 size={12} />
             {lead.sqft}
@@ -82,13 +104,28 @@ export default function LeadCard({ lead }: { lead: Lead }) {
             <Clock size={12} />
             {lead.duration}
           </span>
-          <span className="flex items-center gap-1">
-            <TrendingUp size={12} />
-            {lead.responses} responses
-          </span>
-          <span className="ml-auto text-slate-400">
+          <span className="flex items-center gap-1 ml-auto text-slate-400">
+            <Calendar size={11} />
             {lead.postedDays === 1 ? "Today" : `${lead.postedDays}d ago`}
           </span>
+        </div>
+
+        {/* Response progress bar */}
+        <div className="mb-4">
+          <div className="flex items-center justify-between text-xs mb-1.5">
+            <span className="text-slate-500">{lead.responses} quotes submitted</span>
+            {isFillingUp && isActive && (
+              <span className="text-amber-600 font-semibold">Filling up</span>
+            )}
+          </div>
+          <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+            <div
+              className={`h-full rounded-full transition-all ${
+                isFillingUp ? "bg-amber-400" : "bg-brand-300"
+              }`}
+              style={{ width: `${fillPercent}%` }}
+            />
+          </div>
         </div>
 
         {/* Action */}
@@ -97,7 +134,7 @@ export default function LeadCard({ lead }: { lead: Lead }) {
             href={`/leads/${lead.id}`}
             className="block w-full text-center py-2.5 bg-brand-500 hover:bg-brand-600 text-white text-sm font-semibold rounded-xl transition-colors"
           >
-            Quote on This Lead
+            Quote on This Lead &rarr;
           </Link>
         ) : (
           <div className="block w-full text-center py-2.5 bg-slate-100 text-slate-400 text-sm font-medium rounded-xl cursor-not-allowed">

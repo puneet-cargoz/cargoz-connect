@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, ChevronDown, Building2, Phone } from "lucide-react";
+import { Menu, X, ChevronDown, Building2, Phone, Handshake, Zap } from "lucide-react";
 import CargozLogo from "./CargozLogo";
 
 const LOCATIONS = [
@@ -91,7 +91,7 @@ export default function Navbar() {
                       onClick={() => setLocDropdown(false)}
                       className="text-sm text-brand-600 font-medium hover:text-brand-700"
                     >
-                      View all locations →
+                      View all locations &rarr;
                     </Link>
                   </div>
                 </div>
@@ -100,12 +100,13 @@ export default function Navbar() {
 
             <Link
               href="/products"
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                 isActive("/products")
-                  ? "bg-brand-50 text-brand-700"
-                  : "text-slate-600 hover:text-brand-600 hover:bg-slate-50"
+                  ? "bg-amber-50 text-amber-700"
+                  : "text-slate-600 hover:text-amber-600 hover:bg-amber-50"
               }`}
             >
+              <Zap className="w-3.5 h-3.5 text-amber-500" />
               Blocks & Lockers
             </Link>
 
@@ -120,8 +121,8 @@ export default function Navbar() {
                   : "text-teal-600 hover:text-teal-700 hover:bg-teal-50"
               }`}
             >
-              <Building2 className="w-4 h-4" />
-              For Warehouses
+              <Handshake className="w-4 h-4" />
+              Partner With Us
             </Link>
           </div>
 
@@ -144,7 +145,7 @@ export default function Navbar() {
               href="/register"
               className="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm"
             >
-              List Your Warehouse
+              List Your Warehouse &rarr;
             </Link>
           </div>
 
@@ -172,8 +173,9 @@ export default function Navbar() {
           <Link
             href="/products"
             onClick={() => setMobileOpen(false)}
-            className="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 hover:bg-brand-50 hover:text-brand-700"
+            className="flex items-center gap-1.5 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 hover:bg-amber-50 hover:text-amber-700"
           >
+            <Zap className="w-3.5 h-3.5 text-amber-500" />
             Blocks & Lockers
           </Link>
           <div className="pt-1 pb-1">
@@ -197,8 +199,8 @@ export default function Navbar() {
               onClick={() => setMobileOpen(false)}
               className="flex items-center gap-1.5 px-3 py-2.5 rounded-lg text-sm font-medium text-teal-600 hover:bg-teal-50"
             >
-              <Building2 className="w-4 h-4" />
-              For Warehouses
+              <Handshake className="w-4 h-4" />
+              Partner With Us
             </Link>
           </div>
           <div className="border-t border-slate-100 pt-3 flex flex-col gap-2">
@@ -220,7 +222,7 @@ export default function Navbar() {
               onClick={() => setMobileOpen(false)}
               className="block px-3 py-2.5 rounded-lg text-sm font-semibold text-center bg-brand-500 hover:bg-brand-600 text-white"
             >
-              List Your Warehouse
+              List Your Warehouse &rarr;
             </Link>
           </div>
         </div>

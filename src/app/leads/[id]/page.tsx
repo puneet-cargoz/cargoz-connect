@@ -15,6 +15,9 @@ import {
   Lock,
   CheckCircle2,
   Info,
+  ShieldCheck,
+  Search,
+  Users,
 } from "lucide-react";
 
 const TYPE_COLORS: Record<string, string> = {
@@ -41,11 +44,11 @@ export default function LeadDetailPage() {
   if (!lead) return notFound();
 
   const isOpen = lead.status === "Open";
+  const isHighActivity = lead.responses >= 5;
+  const durationMonths = parseInt(lead.duration) || 0;
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    // In production this would POST to /api/leads/[id]/interest
-    // and open a WhatsApp link with pre-filled message
     const whatsappText = encodeURIComponent(
       `Hi, I'm interested in Lead ${lead!.id} (${lead!.warehouseType} - ${lead!.area}, ${lead!.city}).\n\nCompany: ${form.companyName}\nContact: ${form.contactName}\nWarehouse: ${form.sqft} sqft in ${form.location}\nQuoted Price: ${form.quote}\n\n${form.notes}`
     );
@@ -70,6 +73,43 @@ export default function LeadDetailPage() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* ── Lead Details ── */}
           <div className="lg:col-span-2 space-y-5">
+            {/* Customer signal card */}
+            <div className="bg-white rounded-2xl border border-slate-200 p-5">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-full bg-brand-500 flex items-center justify-center flex-shrink-0">
+                  <span className="text-white font-bold text-lg">
+                    {lead.industry.charAt(0)}
+                  </span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="font-heading font-semibold text-slate-900 text-sm">
+                      {lead.industry} company
+                    </h3>
+                    <span className="flex items-center gap-1 text-xs text-teal-600 font-medium">
+                      <ShieldCheck size={12} />
+                      Verified
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 mb-3">
+                    Mid-sized {lead.industry.split(" ")[0].toLowerCase()} company · Enquiry submitted via Cargoz platform · Identity shared after connection
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-medium">
+                      {lead.warehouseType} storage
+                    </span>
+                    <span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-medium">
+                      UAE-based
+                    </span>
+                    <span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-medium">
+                      {durationMonths >= 12 ? "Long-term intent" : "Short-term"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Main lead detail */}
             <div className="bg-white rounded-2xl border border-slate-200 p-6">
               {/* Status badges */}
               <div className="flex flex-wrap gap-2 mb-4">
@@ -84,6 +124,11 @@ export default function LeadDetailPage() {
                   <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
                     Open
+                  </span>
+                )}
+                {isHighActivity && isOpen && (
+                  <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-full bg-orange-100 text-orange-600 border border-orange-200">
+                    🔥 High activity
                   </span>
                 )}
                 <span className="text-xs text-slate-400 ml-auto">
@@ -108,7 +153,7 @@ export default function LeadDetailPage() {
                   { label: "Space Required", value: lead.sqft, icon: Building2 },
                   { label: "Duration", value: lead.duration, icon: Clock },
                   { label: "Posted", value: `${lead.postedDays}d ago`, icon: TrendingUp },
-                  { label: "Responses", value: `${lead.responses} quotes`, icon: MessageCircle },
+                  { label: "Quotes so far", value: `${lead.responses} — act fast`, icon: MessageCircle, urgent: true },
                 ].map((m) => (
                   <div
                     key={m.label}
@@ -116,7 +161,7 @@ export default function LeadDetailPage() {
                   >
                     <m.icon size={14} className="text-slate-400 mb-1" />
                     <div className="text-xs text-slate-500 mb-0.5">{m.label}</div>
-                    <div className="font-semibold text-slate-900 text-sm">
+                    <div className={`font-semibold text-sm ${m.urgent ? "text-amber-600" : "text-slate-900"}`}>
                       {m.value}
                     </div>
                   </div>
@@ -173,36 +218,87 @@ export default function LeadDetailPage() {
                 </Link>
               </div>
             ) : submitted ? (
-              <div className="bg-white rounded-2xl border border-slate-200 p-6 text-center">
-                <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle2 className="text-emerald-500" size={24} />
+              /* ── Post-quote confirmation (§9) ── */
+              <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                <div className="p-6 text-center border-b border-slate-100">
+                  <div className="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle2 className="text-emerald-500" size={28} />
+                  </div>
+                  <h3 className="font-heading font-bold text-slate-900 text-lg mb-2">
+                    Quote submitted — Lead #{lead.id}
+                  </h3>
+                  <p className="text-sm text-slate-600 leading-relaxed">
+                    Your pitch has been received. A Cargoz rep is reviewing it now and will connect you with the customer on WhatsApp within <span className="font-semibold text-brand-600">2 hours</span>.
+                  </p>
                 </div>
-                <h3 className="font-heading font-bold text-slate-900 text-lg mb-2">
-                  Quote Submitted!
-                </h3>
-                <p className="text-sm text-slate-600 mb-5">
-                  A Cargoz sales rep will reach out via WhatsApp shortly to
-                  connect you with the customer.
-                </p>
-                <p className="text-xs text-slate-400 mb-5">
-                  Register to submit unlimited quotes, track your lead status in
-                  real-time, and get notified instantly.
-                </p>
-                <Link
-                  href="/register"
-                  className="block w-full py-2.5 bg-brand-500 hover:bg-brand-600 text-white text-sm font-semibold rounded-xl text-center transition-colors"
-                >
-                  Register Your Warehouse
-                </Link>
+
+                {/* What happens next timeline */}
+                <div className="p-6">
+                  <h4 className="font-heading font-semibold text-sm text-slate-700 mb-4">What happens next</h4>
+                  <div className="space-y-4">
+                    {[
+                      {
+                        icon: Search,
+                        title: "Quote under review",
+                        desc: "Our team checks your warehouse matches the requirement",
+                        color: "bg-brand-100 text-brand-600",
+                      },
+                      {
+                        icon: MessageCircle,
+                        title: "WhatsApp connection",
+                        desc: "We'll intro you and the customer within 2 hours — check your WhatsApp",
+                        color: "bg-emerald-100 text-emerald-600",
+                      },
+                      {
+                        icon: Users,
+                        title: "Direct negotiation",
+                        desc: "You set the final terms — no broker, no commission on the negotiation",
+                        color: "bg-teal-100 text-teal-600",
+                      },
+                    ].map((step, i) => (
+                      <div key={step.title} className="flex items-start gap-3">
+                        <div className="relative flex-shrink-0">
+                          <div className={`w-9 h-9 rounded-full ${step.color} flex items-center justify-center`}>
+                            <step.icon size={16} />
+                          </div>
+                          {i < 2 && (
+                            <div className="absolute top-9 left-1/2 -translate-x-1/2 w-px h-4 bg-slate-200" />
+                          )}
+                        </div>
+                        <div className="pt-1">
+                          <p className="font-semibold text-sm text-slate-800">{step.title}</p>
+                          <p className="text-xs text-slate-500 mt-0.5">{step.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* CTAs */}
+                <div className="px-6 pb-6 flex flex-col gap-2">
+                  <Link
+                    href="/dashboard"
+                    className="block w-full py-2.5 bg-brand-500 hover:bg-brand-600 text-white text-sm font-semibold rounded-xl text-center transition-colors"
+                  >
+                    View My Quotes Dashboard
+                  </Link>
+                  <Link
+                    href="/leads"
+                    className="block w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold rounded-xl text-center transition-colors"
+                  >
+                    Browse More Leads
+                  </Link>
+                </div>
               </div>
             ) : (
+              /* ── Quote form with SLA (§8) ── */
               <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
                 <div className="px-5 py-4 bg-brand-500">
                   <h2 className="font-heading font-bold text-white text-base">
-                    Submit Your Quote
+                    Respond to this lead
                   </h2>
                   <p className="text-brand-200 text-xs mt-0.5">
-                    Free for guests · 1 lead per day
+                    Registered partner · Unlimited quotes · WhatsApp alerts active
                   </p>
                 </div>
 
@@ -289,11 +385,11 @@ export default function LeadDetailPage() {
 
                   <div>
                     <label className="block text-xs font-semibold text-slate-600 mb-1">
-                      Additional Notes
+                      Additional Notes <span className="font-normal text-slate-400">optional</span>
                     </label>
                     <textarea
                       rows={3}
-                      placeholder="Any special features, certifications, or availability details…"
+                      placeholder="Any special features, certifications, or availability details..."
                       value={form.notes}
                       onChange={(e) =>
                         setForm({ ...form, notes: e.target.value })
@@ -310,16 +406,32 @@ export default function LeadDetailPage() {
                     Submit & Connect on WhatsApp
                   </button>
 
-                  <p className="text-xs text-center text-slate-400">
-                    By submitting, a Cargoz sales rep will contact you via WhatsApp.
-                    <Link
-                      href="/register"
-                      className="ml-1 text-brand-500 hover:underline"
-                    >
-                      Register
-                    </Link>{" "}
-                    to unlock unlimited daily quotes.
-                  </p>
+                  {/* SLA line */}
+                  <div className="flex items-center gap-2 px-3 py-2.5 bg-slate-50 rounded-lg border border-slate-100">
+                    <Clock size={14} className="text-brand-500 flex-shrink-0" />
+                    <p className="text-xs text-slate-600">
+                      A Cargoz rep will connect you with this customer on WhatsApp within <span className="font-semibold text-brand-600">2 hours</span>
+                    </p>
+                  </div>
+
+                  {/* What happens next */}
+                  <div className="border-t border-slate-100 pt-4 mt-2">
+                    <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">What happens next</h4>
+                    <div className="space-y-2.5">
+                      {[
+                        "Your quote is reviewed by our team",
+                        "We shortlist and connect you with the customer on WhatsApp",
+                        "You negotiate directly — no middleman on pricing",
+                      ].map((step, i) => (
+                        <div key={i} className="flex items-start gap-2.5">
+                          <span className="w-5 h-5 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center flex-shrink-0 text-[10px] font-bold mt-0.5">
+                            {i + 1}
+                          </span>
+                          <span className="text-xs text-slate-600 leading-relaxed">{step}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </form>
               </div>
             )}
