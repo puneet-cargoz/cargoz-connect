@@ -10,6 +10,7 @@ import {
 import { MOCK_WAREHOUSES, POPULAR_LOCATIONS, WAREHOUSE_CATEGORIES } from "@/lib/data";
 import WarehouseCard from "@/components/WarehouseCard";
 import CargozLogo from "@/components/CargozLogo";
+import PayAsYouGoChart from "@/components/PayAsYouGoChart";
 
 // Extract meaningful tags from a free-text query
 function extractTags(q: string): { label: string; color: string }[] {
@@ -738,6 +739,56 @@ export default function HomePage() {
             </div>
           )}
 
+        </div>
+      </section>
+
+      {/* ── PAY-AS-YOU-GO VISUAL ── */}
+      <section className="relative bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 py-16 sm:py-20 px-4 overflow-hidden">
+        {/* Subtle grid */}
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `linear-gradient(#7957ff 1px, transparent 1px), linear-gradient(to right, #7957ff 1px, transparent 1px)`,
+            backgroundSize: "48px 48px",
+          }}
+        />
+        <div className="relative max-w-5xl mx-auto">
+          {/* Section header */}
+          <div className="text-center mb-10">
+            <span className="inline-flex items-center gap-2 bg-teal-500/15 text-teal-300 text-xs font-semibold px-4 py-1.5 rounded-full border border-teal-500/25 mb-5">
+              <Zap className="w-3.5 h-3.5" />
+              On-Demand Warehousing
+            </span>
+            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-white mb-3">
+              Stop paying for space you don&apos;t use
+            </h2>
+            <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
+              Traditional leases lock you into fixed sq ft year-round.
+              With Cargoz, your warehouse space <span className="text-teal-400 font-medium">flexes with your business</span> — scale up in peak season, scale down when demand drops.
+            </p>
+          </div>
+
+          {/* Animated chart */}
+          <PayAsYouGoChart />
+
+          {/* Value props below chart */}
+          <div className="grid sm:grid-cols-3 gap-4 mt-12 max-w-3xl mx-auto">
+            {[
+              { icon: <TrendingUp className="w-4 h-4" />, title: "Scale on demand", desc: "Increase or reduce space month-to-month as your inventory changes" },
+              { icon: <ShieldCheck className="w-4 h-4" />, title: "No lock-in contracts", desc: "Flexible monthly terms — exit anytime with 30-day notice" },
+              { icon: <Lock className="w-4 h-4" />, title: "Pay only for what you use", desc: "Like cloud hosting for your warehouse — no idle capacity costs" },
+            ].map((item) => (
+              <div key={item.title} className="flex items-start gap-3 bg-white/[0.04] border border-white/[0.08] rounded-xl p-4">
+                <div className="w-8 h-8 bg-teal-500/15 rounded-lg flex items-center justify-center text-teal-400 flex-shrink-0 mt-0.5">
+                  {item.icon}
+                </div>
+                <div>
+                  <p className="text-white font-semibold text-sm mb-1">{item.title}</p>
+                  <p className="text-slate-400 text-xs leading-relaxed">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
